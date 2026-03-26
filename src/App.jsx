@@ -6,21 +6,24 @@ import Navbar from './components/Navbar';
 import Dashboard from './components/Dashboard';
 import AddExpense from './components/AddExpense';
 import Manage_Expense from './components/ManageExpense';
+import Index from './components';
 
 function App() {
 
   return (
     <>
-        <BrowserRouter>
+      <BrowserRouter>
         <Navbar/>
         <Routes>
-            <Route path='/dashboard' element={<Dashboard/>}></Route>
-            <Route path='/signup' element={<Signup/>}></Route>
-            <Route path='/login' element={<Login/>}></Route>
-            <Route path='/add-expense' element={<AddExpense/>}></Route>
-            <Route path='/manage_expense' element={<Manage_Expense/>}></Route>
+          <Route path='/' element={<Index/>} />
+          <Route path='/home' element={<Index/>} />
+          <Route path='/dashboard' element={<Dashboard/>} />
+          <Route path='/signup' element={<Signup/>} />
+          <Route path='/login' element={<Login/>} />
+          <Route path='/add-expense' element={<AddExpense/>} />
+          <Route path='/manage_expense' element={<Manage_Expense/>} />
         </Routes>
-        </BrowserRouter>
+      </BrowserRouter>
     </>
   )
 }

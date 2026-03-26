@@ -19,7 +19,7 @@ const Navbar = () => {
 
         
       <div className="container">
-        <Link className="navbar-brand" to="/"><i className="fas fa-wallet me-2"></i>Expense Tracker</Link>
+        <Link className="navbar-brand" to="/home"><i className="fas fa-wallet me-2"></i>Expense Tracker</Link>
 
         <button
           className="navbar-toggler"
@@ -37,7 +37,7 @@ const Navbar = () => {
           <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
             
             <li className="nav-item">
-              <Link className="nav-link active" to="/"><i className="fa fa-home me-2"></i>Home</Link>
+              <Link className="nav-link active" to="/home"><i className="fa fa-home me-2"></i>Home</Link>
             </li>
             {userId ?(
               <>
