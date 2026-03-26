@@ -6,7 +6,7 @@ import Navbar from './components/Navbar';
 import Dashboard from './components/Dashboard';
 import AddExpense from './components/AddExpense';
 import Manage_Expense from './components/ManageExpense';
-
+import Index from './components/Index';
 
 function App() {
 
