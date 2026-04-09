@@ -1,7 +1,7 @@
 import React, { useState,useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from 'react-router-dom';
-import { API_BASE_URL } from '../config';
+import { apiClient } from '../utils/apiClient';
 
 const AddExpense = () => {
     const navigate = useNavigate();
@@ -25,22 +25,17 @@ const AddExpense = () => {
     const handleSubmit=async (e) => {
           e.preventDefault();
           try{
-            const response=await fetch(`${API_BASE_URL}/api/add_expense/`,{
-              method:'POST',
-              header:{'Content-Type':'application/json'},
-              body:JSON.stringify({
-                ...addata,
-                UserId:userId
-              })
+            const response = await apiClient.post('/api/add_expense/', {
+              ...addata,
+              UserId:userId
             });
-            if(response.status===201){
-              toast.success("Expense add succesffuly!!");
+            
+            if(response.message){
+              toast.success("Expense added successfully!!");
+              setData({ ExpenseDate: '', ExpenseItem: '', ExpenseCost: '' });
               setTimeout(() => {
+                navigate('/dashboard');
               }, 2000);
-            }
-            else{
-              const data=await response.json();
-              toast.error(data.message)
             }
           }
           catch (error){

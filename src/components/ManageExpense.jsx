@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from 'react-router-dom';
-import { API_BASE_URL } from '../config';
+import { apiClient } from '../utils/apiClient';
 
 const Manage_Expense = () => {
     const navigate = useNavigate();
     const [expenses, setExpenses] = useState([]);
+    const [loading, setLoading] = useState(false);
     const userId = localStorage.getItem('userId');
 
     // State to hold the expense data being edited
@@ -23,17 +24,19 @@ const Manage_Expense = () => {
         fetchExpenses(userId);
     }, [userId, navigate]);
 
+    // ✅ Optimized fetch with caching
     const fetchExpenses = async(userId) => {
+        setLoading(true);
         try {
-            const response = await fetch(`${API_BASE_URL}/api/manage_expense/${userId}`);
-            const data = await response.json();
+            const data = await apiClient.get(`/api/manage_expense/${userId}?page=1&page_size=20`);
             setExpenses(data.expenses || []);
         } catch (error) {
             console.error("Error Fetching Expenses:", error);
+            toast.error("Failed to fetch expenses");
+        } finally {
+            setLoading(false);
         }
     };
-
-    // --- NEW LOGIC START ---
 
     // Function to populate the modal state when Edit is clicked
     const handleEditClick = (expense) => {
@@ -53,43 +56,30 @@ const Manage_Expense = () => {
         });
     };
 
-    // Example Update function (for the Save changes button)
+    // ✅ Update function with optimized API client
     const handleUpdate = async () => {
     try {
-        // Added the slash after ${editExpense.id}
-        const response = await fetch(`${API_BASE_URL}/api/update_expense/${editExpense.id}/`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(editExpense)
-        });
-        
-        if (response.ok) {
-            toast.success("Expense updated successfully!");
-            fetchExpenses(userId);
-        }
+        await apiClient.put(`/api/update_expense/${editExpense.id}/`, editExpense);
+        toast.success("Expense updated successfully!");
+        apiClient.clearCache(); // ✅ Clear cache to get fresh data
+        fetchExpenses(userId);
     } catch (error) {
+        console.error("Update error:", error);
         toast.error("Failed to update expense");
     }
 };
 
-    // --- NEW LOGIC END ---
-
-    // Delete logic
+    // ✅ Delete logic with optimized API client
     const handleDelete = async (expenseId) => {
     if(window.confirm("Are you sure you want to delete this expense?")){
     try {
-        // Added the slash after ${editExpense.id}
-        const response = await fetch(`${API_BASE_URL}/api/delete_expense/${expenseId}/`, {
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' }
-        });
-        
-        if (response.ok) {
-            toast.success("Expense deleted successfully!");
-            fetchExpenses(userId);
-        }
+        await apiClient.delete(`/api/delete_expense/${expenseId}/`);
+        toast.success("Expense deleted successfully!");
+        apiClient.clearCache(); // ✅ Clear cache to get fresh data
+        fetchExpenses(userId);
     }
     catch (error) {
+        console.error("Delete error:", error);
         toast.error("Failed to delete expense");
     }
     
